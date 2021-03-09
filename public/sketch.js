@@ -171,11 +171,15 @@ function draw() {
 		background(255, 255, 0);
 	}
 	else  {
+		// background(0, 0, 0);
 		background(0, 0, 0);
 	}
 
-	// drawBackground();
-	// drawMidground();
+	drawBackgroundLayer();
+	drawMidgroundLayer();
+	// fill(0, 0, 0, 100);
+	// rect(0, 0, width, height);
+	fill(255);
 	drawForegroundLayer();
 
 	// drawTouch();
@@ -183,7 +187,7 @@ function draw() {
 
 function drawForegroundLayer(){
 	push();
-	let image_size = width * 0.5;
+	let image_size = height * 0.75;
 	// scale(1.5);
 	offset = millis() * 0.01 % image_size * 10;
 	iOffset = parseInt(offset/image_size);
@@ -195,20 +199,76 @@ function drawForegroundLayer(){
 		if( typeof foregroundLayer[adjustedI] !== 'undefined'){
 
 			// translate(300, 0);
-			tint(255);
+			// if(i == 1)
+				tint(abs(map((offset*0.5+image_size*0.5)%image_size, 0, image_size, -555, 555))-200);
+			// else
+				// tint(0);
 			if(foregroundLayer[adjustedI].drawing != null)
-			image(foregroundLayer[adjustedI].drawing, i*image_size, height-image_size*0.8, image_size, image_size);
+			image(foregroundLayer[adjustedI].drawing, i*image_size, height-image_size*0.95, image_size, image_size);
 			noTint();
 			if(foregroundLayer[adjustedI].line != null)
-			image(foregroundLayer[adjustedI].line, i*image_size, height-image_size*0.8, image_size, image_size);
+			image(foregroundLayer[adjustedI].line, i*image_size, height-image_size*0.95, image_size, image_size);
 			// image(item.drawing, i*300, 0);
 		}
 	}
-		pop();
+	pop();
 }
 
-function drawMidgroundLayer(){}
-function drawBackgroundLayer(){}
+function drawMidgroundLayer(){
+	push();
+	let image_size = height * 0.4;
+	// scale(1.5);
+	offset = millis() * 0.003 % image_size * 10;
+	iOffset = parseInt(offset/image_size);
+
+	translate(-(offset%image_size), 0);
+	for(let i = 0; i < 7; i++  ){
+		let adjustedI = (i + iOffset) % 5;
+		// console.log((i + iOffset) % 10);
+		if( typeof midgroundLayer[adjustedI] !== 'undefined'){
+
+			// translate(300, 0);
+			tint(100, 0, 100);
+			if(midgroundLayer[adjustedI].drawing != null)
+			image(midgroundLayer[adjustedI].drawing, i*image_size, height-image_size*1.6, image_size, image_size);
+			// tint(100, 0, 100);
+			noTint();
+			if(midgroundLayer[adjustedI].line != null)
+			image(midgroundLayer[adjustedI].line, i*image_size, height-image_size*1.6, image_size, image_size);
+			// image(item.drawing, i*300, 0);
+		}
+	}
+	pop();
+}
+
+function drawBackgroundLayer(){
+	push();
+	let image_size = height * 0.1;
+	// scale(1.5);
+	offset = millis() * 0.001 % image_size * 10;
+	iOffset = parseInt(offset/image_size);
+
+	translate(image_size,0);
+	translate(-(offset%image_size), 0);
+	for(let i = 0; i < 20; i++  ){
+		let adjustedI = (i + iOffset) % 10;
+		// console.log((i + iOffset) % 10);
+		if( typeof backgroundLayer[adjustedI] !== 'undefined'){
+
+			// translate(300, 0);
+			tint(50, 0, 50);
+			if(backgroundLayer[adjustedI].drawing != null)
+			image(backgroundLayer[adjustedI].drawing, i*image_size, height-image_size*5.5, image_size, image_size);
+			// tint(100, 0, 100);
+			noTint();
+			if(backgroundLayer[adjustedI].line != null)
+			image(backgroundLayer[adjustedI].line, i*image_size, height-image_size*5.5, image_size, image_size);
+			// image(item.drawing, i*300, 0);
+		}
+	}
+	pop();
+
+}
 
 // function drawTouch() {
 // 	if (mouseX > 10 && mouseX < width - 10 && (mouseY > 10 && mouseY < height - 10)) {
