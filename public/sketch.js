@@ -4,7 +4,7 @@ let displayState = {
 	previousOrientation: 'portrait',
 };
 let isPressed = false;
-
+let sharpieFont = null;
 
 let foregroundLayer = [];
 let midgroundLayer = [];
@@ -52,7 +52,24 @@ function dataCallback(data) {
 		drawings.push(newDrawing);
 	});
 
-	//do url handling here if required
+
+	
+	//url handling
+	let urlName = getUrlName();
+	console.log('url name:', urlName);
+	let foundIndex;
+	if (urlName != '') {
+		for (let index = 0; index < drawings.length; index++) {
+			if (drawings[index].uid.toLowerCase() == urlName) {
+				foundIndex = index;
+				console.log('loading ' + drawings[foundIndex].uid);
+				//foundDrawing = drawings[foundIndex];
+				break;
+			}
+		}
+	}
+
+
 
 	let tempDrawings = JSON.parse(JSON.stringify(drawings));
 	// console.log(tempDrawings);
@@ -73,6 +90,11 @@ function dataCallback(data) {
 	loadLayer(foregroundLayer, tempDrawings.slice(0, 10));
 	loadLayer(midgroundLayer, tempDrawings.slice(10, 20));
 	loadLayer(backgroundLayer, tempDrawings.slice(20, 30));
+
+	//if url is included swap position 2 in foreground layer with chosen item 
+	if(foundIndex != null){
+		print("yo, there's a found index");
+	}
 	
 	
 	setState('ready');
@@ -103,6 +125,10 @@ function loadLayer(layer, items){
 //------------SETUP------------------------------------------------------------
 function setup() {
 	setState('loading');
+	sharpieFont = loadFont('assets/PermanentMarker-Regular.ttf');
+  textFont(sharpieFont);
+  
+  textAlign(CENTER, CENTER);
 
 	canvas = createCanvas(windowWidth, windowHeight);
 	canvas.position(0, 0);
@@ -193,17 +219,21 @@ function drawForegroundLayer(){
 	offset = foregroundOffset % image_size * 10;
 	iOffset = parseInt(offset/image_size);
 
+	// let centreTargetOffset = (parseInt(width/image_size));
+
 	if(mouseIsPressed){
 		let center = (((offset+width/2)/image_size))%1;
+
+		// print(foregroundLayer[iOffset + centreTargetOffset].title);
 
 		//if center < 0.5
 			// increment foregroundOffset
 		//if center > 0.5
 			//decrement foregroundOffset
-		if(center < 0.425 ){
-			foregroundOffset += deltaTime * 0.04;
-		}else if (center > 0.575){
-			foregroundOffset -= deltaTime * 0.04;
+		if(center < 0.49 ){
+			foregroundOffset += deltaTime * 0.08 * (0.5 - center);
+		}else if (center > 0.51){
+			foregroundOffset -= deltaTime * (0.08 * (center - 0.5));
 		}
 
 		if(foregroundTint < 255)
@@ -216,30 +246,42 @@ function drawForegroundLayer(){
 		
 	}
 	
-	
-	
 	push();
 	// scale(1.5);
 	
-	
-
 	translate(-(offset%image_size), 0);
 	for(let i = 0; i < 5; i++  ){
 		let adjustedI = (i + iOffset) % 5;
 		
 		if( typeof foregroundLayer[adjustedI] !== 'undefined'){
 			
+			//draw drawing
 			tint(foregroundTint);
 			if(foregroundLayer[adjustedI].drawing != null)
 				image(foregroundLayer[adjustedI].drawing, i*image_size, height-image_size*0.95, image_size, image_size);
+			//draw line
 			noTint();
 			if(foregroundLayer[adjustedI].line != null)
 				image(foregroundLayer[adjustedI].line, i*image_size, height-image_size*0.95, image_size, image_size);
+			
+			//draw text
+			
+			if(foregroundLayer[adjustedI].title != null && mouseIsPressed){ 
+				let thisString =  "\"" + foregroundLayer[adjustedI].title + "\"\n by " + foregroundLayer[adjustedI].author + ",\nage " + foregroundLayer[adjustedI].age;
+				// let thisString = " ";
+				// text(thisString, i*image_size + image_size/2, 0, image_size * 2, height * 0.75);
+				textSize(32);
+				text(thisString, i*image_size + image_size/2, height/6);
+				thisString =  "\"" + foregroundLayer[adjustedI].text + "\"" ;
+				// textSize(24);
+				// text(thisString, i*image_size + image_size/2, height - height/4);
+			}
 		}
 	}
 	pop();
 }
 
+//can optimize by making prerendered images
 function drawMidgroundLayer(){
 	push();
 	let image_size = height * 0.4;
@@ -267,6 +309,7 @@ function drawMidgroundLayer(){
 	pop();
 }
 
+//can optimize by making prerendered images
 function drawBackgroundLayer(){
 	push();
 	let image_size = height * 0.1;
