@@ -62,7 +62,7 @@ function dataCallback(data) {
 		for (let index = 0; index < drawings.length; index++) {
 			if (drawings[index].uid.toLowerCase() == urlName) {
 				foundIndex = index;
-				console.log('loading ' + drawings[foundIndex].uid);
+				// console.log('loading ' + drawings[foundIndex].uid);
 				//foundDrawing = drawings[foundIndex];
 				break;
 			}
@@ -85,18 +85,21 @@ function dataCallback(data) {
 	//shuffle array
 	shuffle(tempDrawings, true);
 	
+	//if url is included swap position 2 in foreground layer with chosen item 
+	if(foundIndex != null){
+		print("adding drawing from url:");
+		print(drawings[foundIndex]);
+		tempDrawings.splice(3, 1, drawings[foundIndex]);
+	}
+	
+
 	// //split shuffled array amongst fore, mid and backgrounds
 	// console.log(tempDrawings);
 	loadLayer(foregroundLayer, tempDrawings.slice(0, 10));
 	loadLayer(midgroundLayer, tempDrawings.slice(10, 20));
 	loadLayer(backgroundLayer, tempDrawings.slice(20, 30));
 
-	//if url is included swap position 2 in foreground layer with chosen item 
-	if(foundIndex != null){
-		print("yo, there's a found index");
-	}
-	
-	
+
 	setState('ready');
 }
 
