@@ -5,6 +5,7 @@ let displayState = {
 };
 let isPressed = false;
 
+
 let foregroundLayer = [];
 let midgroundLayer = [];
 let backgroundLayer = [];
@@ -137,7 +138,6 @@ function update() {
   // check orientation
   setDisplayState();
 
-
 }
 
 function setDisplayState() {
@@ -182,33 +182,59 @@ function draw() {
 	fill(255);
 	drawForegroundLayer();
 
-	// drawTouch();
+	drawTouch();
 }
 
+
+let foregroundOffset = 0;
+let foregroundTint = 0;
 function drawForegroundLayer(){
-	push();
 	let image_size = height * 0.75;
-	// scale(1.5);
-	offset = millis() * 0.01 % image_size * 10;
+	offset = foregroundOffset % image_size * 10;
 	iOffset = parseInt(offset/image_size);
+
+	if(mouseIsPressed){
+		let center = (offset/image_size)%1;
+
+		//if center < 0.5
+			// increment foregroundOffset
+		//if center > 0.5
+			//decrement foregroundOffset
+		if(center < 0.45 ){
+			foregroundOffset += deltaTime * 0.06;
+		}else if (center > 0.55){
+			foregroundOffset -= deltaTime * 0.06;
+		}
+
+		if(foregroundTint < 255)
+			foregroundTint += deltaTime * 1;
+	}else{	
+		foregroundOffset += deltaTime * 0.008;
+		
+		if(foregroundTint > 0)	
+		foregroundTint -= deltaTime * 0.5;
+		
+	}
+	
+	
+	
+	push();
+	// scale(1.5);
+	
+	
 
 	translate(-(offset%image_size), 0);
 	for(let i = 0; i < 5; i++  ){
 		let adjustedI = (i + iOffset) % 5;
-		// console.log((i + iOffset) % 10);
+		
 		if( typeof foregroundLayer[adjustedI] !== 'undefined'){
-
-			// translate(300, 0);
-			// if(i == 1)
-				tint(abs(map((offset*0.5+image_size*0.5)%image_size, 0, image_size, -555, 555))-200);
-			// else
-				// tint(0);
+			
+			tint(foregroundTint);
 			if(foregroundLayer[adjustedI].drawing != null)
-			image(foregroundLayer[adjustedI].drawing, i*image_size, height-image_size*0.95, image_size, image_size);
+				image(foregroundLayer[adjustedI].drawing, i*image_size, height-image_size*0.95, image_size, image_size);
 			noTint();
 			if(foregroundLayer[adjustedI].line != null)
-			image(foregroundLayer[adjustedI].line, i*image_size, height-image_size*0.95, image_size, image_size);
-			// image(item.drawing, i*300, 0);
+				image(foregroundLayer[adjustedI].line, i*image_size, height-image_size*0.95, image_size, image_size);
 		}
 	}
 	pop();
@@ -270,15 +296,15 @@ function drawBackgroundLayer(){
 
 }
 
-// function drawTouch() {
-// 	if (mouseX > 10 && mouseX < width - 10 && (mouseY > 10 && mouseY < height - 10)) {
-// 		let ellipseWidth = mouseIsPressed ? 70 : 0;
-// 		stroke(240, 100);
-// 		strokeWeight(5);
-// 		fill(200, 100);
-// 		ellipse(mouseX, mouseY, ellipseWidth);
-// 	}
-// }
+function drawTouch() {
+	if (mouseX > 10 && mouseX < width - 10 && (mouseY > 10 && mouseY < height - 10)) {
+		let ellipseWidth = mouseIsPressed ? 70 : 0;
+		stroke(240, 100);
+		strokeWeight(5);
+		fill(200, 100);
+		ellipse(mouseX, mouseY, ellipseWidth);
+	}
+}
 
 
 //------------INTERACTION------------------------------------------------------------
@@ -286,10 +312,10 @@ function drawBackgroundLayer(){
 //------------INTERACTION------------------------------------------------------------
 ///ONTOUCH
 function go() {
-  if (Tone.context.state != 'running') {
-    console.log('starting tone.js');
-    Tone.start();
-  }
+	// if (Tone.context.state != 'running') {
+		//console.log('starting tone.js');
+    //Tone.start();
+  // }
 	isPressed = true;
 }
 
