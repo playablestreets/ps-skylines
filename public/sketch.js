@@ -194,16 +194,16 @@ function drawForegroundLayer(){
 	iOffset = parseInt(offset/image_size);
 
 	if(mouseIsPressed){
-		let center = (offset/image_size)%1;
+		let center = (((offset+width/2)/image_size))%1;
 
 		//if center < 0.5
 			// increment foregroundOffset
 		//if center > 0.5
 			//decrement foregroundOffset
-		if(center < 0.45 ){
-			foregroundOffset += deltaTime * 0.06;
-		}else if (center > 0.55){
-			foregroundOffset -= deltaTime * 0.06;
+		if(center < 0.425 ){
+			foregroundOffset += deltaTime * 0.04;
+		}else if (center > 0.575){
+			foregroundOffset -= deltaTime * 0.04;
 		}
 
 		if(foregroundTint < 255)
