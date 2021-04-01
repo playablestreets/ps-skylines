@@ -270,7 +270,11 @@ function drawForegroundLayer(){
 			//draw text
 			
 			if(foregroundLayer[adjustedI].title != null && mouseIsPressed){ 
-				let thisString =  "\"" + foregroundLayer[adjustedI].title + "\"\n by " + foregroundLayer[adjustedI].author + ",\nage " + foregroundLayer[adjustedI].age;
+				let thisString =  "\"" + foregroundLayer[adjustedI].title + "\"\n by " 
+				+ foregroundLayer[adjustedI].author;
+				if(foregroundLayer[adjustedI].age != null){
+					thisString += ",\nage " + foregroundLayer[adjustedI].age;
+				}
 				// let thisString = " ";
 				// text(thisString, i*image_size + image_size/2, 0, image_size * 2, height * 0.75);
 				textSize(32);
