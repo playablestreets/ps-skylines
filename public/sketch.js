@@ -38,7 +38,7 @@ function dataCallback(data) {
 
 
 	data.forEach((item) => {
-		// console.log(item);
+		console.log("loading... " + item.uid);
 		let newDrawing = {...drawing};
 		newDrawing.uid = item.uid;
 		newDrawing.title = item.data.title[0].text;
